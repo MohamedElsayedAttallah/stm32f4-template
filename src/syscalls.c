@@ -18,12 +18,24 @@
 int _write(int file, char *ptr, int len)
 {
     (void)file;
-    (void)ptr;
-    /* Return len to indicate all bytes were "written" successfully */
-    return len;
-}
 
-/* _read: Read characters from an input device (stub). */
+    /* 1. Enable the clock for USART2 in the RCC_APB1ENR register (Bit 17) */
+    *((volatile unsigned int*)0x40023840) |= (1 << 17);
+
+    /* 2. Enable USART2 (UE = Bit 13) and the Transmitter (TE = Bit 3) in USART2_CR1 */
+    *((volatile unsigned int*)0x4000440C) |= (1 << 13) | (1 << 3);
+
+    /* 3. Send the characters */
+    for (int i = 0; i < len; i++) {
+        /* Wait for the Transmit Data Register Empty (TXE) bit in the Status Register */
+        while ( !(*((volatile unsigned int*)0x40004400) & (1 << 7)) ) {}
+        
+        /* Write the character to the Data Register */
+        *((volatile char*)0x40004404) = ptr[i];
+    }
+    
+    return len;
+}/* _read: Read characters from an input device (stub). */
 int _read(int file, char *ptr, int len)
 {
     (void)file;

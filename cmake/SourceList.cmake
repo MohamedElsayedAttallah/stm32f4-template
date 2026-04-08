@@ -14,4 +14,6 @@ else ()
 endif ()
 
 set(SOURCE_LIST ${SOURCE_LIST} ${SRC_FILES}
-        ${PROJECT_PATH}/STM32-base-STM32Cube/CMSIS/${SERIES_FOLDER}/src/system_${SERIES_FOLDER}.c)
+    ${PROJECT_PATH}/src/syscalls.c   # 🔥 force include
+    ${PROJECT_PATH}/STM32-base-STM32Cube/CMSIS/${SERIES_FOLDER}/src/system_${SERIES_FOLDER}.c
+)
